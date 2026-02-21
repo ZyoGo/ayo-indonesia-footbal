@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strings"
 
+	common "github.com/ZyoGo/ayo-indonesia-footbal/pkg/http"
+	"github.com/ZyoGo/ayo-indonesia-footbal/pkg/jwt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,19 +15,11 @@ var (
 	InvalidToken = "Invalid / expired token"
 )
 
-type jwt interface {
-	ParseAndVerify(accessToken string) (JwtAttr, error)
-}
-
-type JwtAttr struct {
-	Email    string
-}
-
 type AuthGuard struct {
-	j jwt
+	j *jwt.Service
 }
 
-func NewAuthGuard(j jwt) *AuthGuard {
+func NewAuthGuard(j *jwt.Service) *AuthGuard {
 	return &AuthGuard{j: j}
 }
 
@@ -35,14 +29,14 @@ func (g *AuthGuard) Guard() gin.HandlerFunc {
 		authHeader := c.GetHeader("Authorization")
 
 		if !strings.HasPrefix(authHeader, PrefixHeader) {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header missing/invalid"})
+			c.JSON(http.StatusUnauthorized, common.NewUnauthorizedResponse("Authorization header missing/invalid"))
 			c.Abort()
 			return
 		}
 
 		attr, err := g.j.ParseAndVerify(strings.TrimPrefix(authHeader, PrefixHeader))
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": InvalidToken})
+			c.JSON(http.StatusUnauthorized, common.NewUnauthorizedResponse(InvalidToken))
 			c.Abort()
 			return
 		}
