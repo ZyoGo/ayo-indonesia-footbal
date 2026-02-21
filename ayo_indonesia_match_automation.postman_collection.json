@@ -6,515 +6,697 @@
 	},
 	"item": [
 		{
-			"name": "1. Create Home Team",
-			"event": [
+			"name": "Auth",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200 or 201\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-							"});",
-							"var res = pm.response.json();",
-							"pm.test(\"Has Team ID\", function () {",
-							"    pm.expect(res.payload).to.be.a('string');",
-							"    pm.collectionVariables.set(\"home_team_id\", res.payload);",
-							"});"
+					"name": "1. Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var res = pm.response.json();",
+									"pm.test(\"Has access_token\", function () {",
+									"    pm.expect(res.payload).to.have.property('access_token');",
+									"    pm.collectionVariables.set(\"access_token\", res.payload.access_token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
 						],
-						"type": "text/javascript"
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@ayo.id\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
 					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"name\": \"Persija Jakarta\",\n    \"logo_url\": \"https://example.com/persija.png\",\n    \"year_founded\": 1928,\n    \"address\": \"Jl. Rasuna Said\",\n    \"city\": \"Jakarta\"\n}"
 				},
-				"url": {
-					"raw": "http://localhost:4000/api/v1/teams",
-					"protocol": "http",
-					"host": [
-						"localhost"
+				{
+					"name": "2. Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"port": "4000",
-					"path": [
-						"api",
-						"v1",
-						"teams"
-					]
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"user@ayo.id\",\n    \"password\": \"password123\",\n    \"name\": \"Test User\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v1/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					}
 				}
-			}
+			]
 		},
 		{
-			"name": "2. Create Away Team",
-			"event": [
+			"name": "Teams",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200 or 201\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-							"});",
-							"var res = pm.response.json();",
-							"pm.test(\"Has Team ID\", function () {",
-							"    pm.expect(res.payload).to.be.a('string');",
-							"    pm.collectionVariables.set(\"away_team_id\", res.payload);",
-							"});"
+					"name": "3. Create Home Team",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"var res = pm.response.json();",
+									"pm.test(\"Has Team ID\", function () {",
+									"    pm.expect(res.payload).to.be.a('string');",
+									"    pm.collectionVariables.set(\"home_team_id\", res.payload);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
 						],
-						"type": "text/javascript"
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Persija Jakarta\",\n    \"logo_url\": \"https://example.com/persija.png\",\n    \"year_founded\": 1928,\n    \"address\": \"Jl. Rasuna Said\",\n    \"city\": \"Jakarta\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v1/teams",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"teams"
+							]
+						}
 					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"name\": \"Persib Bandung\",\n    \"logo_url\": \"https://example.com/persib.png\",\n    \"year_founded\": 1933,\n    \"address\": \"Jl. Sulanjana\",\n    \"city\": \"Bandung\"\n}"
 				},
-				"url": {
-					"raw": "http://localhost:4000/api/v1/teams",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"api",
-						"v1",
-						"teams"
-					]
-				}
-			}
-		},
-		{
-			"name": "3. Create Match",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200 or 201\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-							"});",
-							"var res = pm.response.json();",
-							"pm.test(\"Has Match ID\", function () {",
-							"    pm.expect(res.payload).to.be.a('string');",
-							"    pm.collectionVariables.set(\"match_id\", res.payload);",
-							"});"
+					"name": "4. Create Away Team",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"var res = pm.response.json();",
+									"pm.test(\"Has Team ID\", function () {",
+									"    pm.expect(res.payload).to.be.a('string');",
+									"    pm.collectionVariables.set(\"away_team_id\", res.payload);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
 						],
-						"type": "text/javascript"
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Persib Bandung\",\n    \"logo_url\": \"https://example.com/persib.png\",\n    \"year_founded\": 1933,\n    \"address\": \"Jl. Sulanjana\",\n    \"city\": \"Bandung\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v1/teams",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"teams"
+							]
+						}
 					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"home_team_id\": \"{{home_team_id}}\",\n    \"away_team_id\": \"{{away_team_id}}\",\n    \"match_date\": \"2026-10-15\",\n    \"match_time\": \"19:00\",\n    \"stadium\": \"Gelora Bung Karno\"\n}"
 				},
-				"url": {
-					"raw": "http://localhost:4000/api/v1/matches",
-					"protocol": "http",
-					"host": [
-						"localhost"
+				{
+					"name": "5. Get All Teams",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"port": "4000",
-					"path": [
-						"api",
-						"v1",
-						"matches"
-					]
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/teams",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"teams"
+							]
+						}
+					}
 				}
-			}
+			]
 		},
 		{
-			"name": "4. Get All Matches",
-			"event": [
+			"name": "Matches",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"var res = pm.response.json();",
-							"pm.test(\"Response is array and contains our match\", function () {",
-							"    pm.expect(res.payload).to.be.an('array');",
-							"    var match = res.payload.find(m => m.id === pm.collectionVariables.get(\"match_id\"));",
-							"    pm.expect(match).to.not.be.undefined;",
-							"    ",
-							"    // Verify schema fields",
-							"    pm.expect(match).to.have.property('home_team_name', 'Persija Jakarta');",
-							"    pm.expect(match).to.have.property('away_team_name', 'Persib Bandung');",
-							"    pm.expect(match).to.not.have.property('stadium');",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/api/v1/matches",
-					"protocol": "http",
-					"host": [
-						"localhost"
+					"name": "6. Create Match",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"var res = pm.response.json();",
+									"pm.test(\"Has Match ID\", function () {",
+									"    pm.expect(res.payload).to.be.a('string');",
+									"    pm.collectionVariables.set(\"match_id\", res.payload);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"port": "4000",
-					"path": [
-						"api",
-						"v1",
-						"matches"
-					]
-				}
-			}
-		},
-		{
-			"name": "5. Get Match details",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"var res = pm.response.json();",
-							"pm.test(\"Response matches our detail schema\", function () {",
-							"    pm.expect(res.payload.id).to.eql(pm.collectionVariables.get(\"match_id\"));",
-							"    pm.expect(res.payload.home_team_name).to.eql('Persija Jakarta');",
-							"    pm.expect(res.payload.away_team_name).to.eql('Persib Bandung');",
-							"    pm.expect(res.payload.stadium).to.eql('Gelora Bung Karno');",
-							"    pm.expect(res.payload).to.have.property('created_at');",
-							"    pm.expect(res.payload).to.have.property('updated_at');",
-							"});"
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
 						],
-						"type": "text/javascript"
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"home_team_id\": \"{{home_team_id}}\",\n    \"away_team_id\": \"{{away_team_id}}\",\n    \"match_date\": \"2026-10-15\",\n    \"match_time\": \"19:00\",\n    \"stadium\": \"Gelora Bung Karno\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v1/matches",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"matches"
+							]
+						}
 					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/api/v1/matches/{{match_id}}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"api",
-						"v1",
-						"matches",
-						"{{match_id}}"
-					]
-				}
-			}
-		},
-		{
-			"name": "6. Create Home Player",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200/201\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
-							"var res = pm.response.json();",
-							"pm.test(\"Save Player ID\", function () {",
-							"    pm.expect(res.payload).to.be.a('string');",
-							"    pm.collectionVariables.set(\"home_player_id\", res.payload);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"team_id\": \"{{home_team_id}}\",\n    \"name\": \"Budi Sudarsono\",\n    \"jersey_number\": 13,\n    \"position\": \"CF\",\n    \"height\": 175.5,\n    \"weight\": 70.0\n}"
 				},
-				"url": {
-					"raw": "http://localhost:4000/api/v1/players",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"api",
-						"v1",
-						"players"
-					]
-				}
-			}
-		},
-		{
-			"name": "7. Create Away Player",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200/201\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
-							"var res = pm.response.json();",
-							"pm.test(\"Save Player ID\", function () {",
-							"    pm.expect(res.payload).to.be.a('string');",
-							"    pm.collectionVariables.set(\"away_player_id\", res.payload);",
-							"});"
-						],
-						"type": "text/javascript"
+					"name": "7. Get All Matches",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var res = pm.response.json();",
+									"pm.test(\"Response is array and contains our match\", function () {",
+									"    pm.expect(res.payload).to.be.an('array');",
+									"    var match = res.payload.find(m => m.id === pm.collectionVariables.get(\"match_id\"));",
+									"    pm.expect(match).to.not.be.undefined;",
+									"    ",
+									"    // Verify schema fields",
+									"    pm.expect(match).to.have.property('home_team_name', 'Persija Jakarta');",
+									"    pm.expect(match).to.have.property('away_team_name', 'Persib Bandung');",
+									"    pm.expect(match).to.not.have.property('stadium');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/matches",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"matches"
+							]
+						}
 					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"team_id\": \"{{away_team_id}}\",\n    \"name\": \"Bambang Pamungkas\",\n    \"jersey_number\": 20,\n    \"position\": \"CF\",\n    \"height\": 170.0,\n    \"weight\": 68.5\n}"
 				},
-				"url": {
-					"raw": "http://localhost:4000/api/v1/players",
-					"protocol": "http",
-					"host": [
-						"localhost"
+				{
+					"name": "8. Get Match details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var res = pm.response.json();",
+									"pm.test(\"Response matches our detail schema\", function () {",
+									"    pm.expect(res.payload.id).to.eql(pm.collectionVariables.get(\"match_id\"));",
+									"    pm.expect(res.payload.home_team_name).to.eql('Persija Jakarta');",
+									"    pm.expect(res.payload.away_team_name).to.eql('Persib Bandung');",
+									"    pm.expect(res.payload.stadium).to.eql('Gelora Bung Karno');",
+									"    pm.expect(res.payload).to.have.property('created_at');",
+									"    pm.expect(res.payload).to.have.property('updated_at');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
 					],
-					"port": "4000",
-					"path": [
-						"api",
-						"v1",
-						"players"
-					]
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/matches/{{match_id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"matches",
+								"{{match_id}}"
+							]
+						}
+					}
 				}
-			}
+			]
 		},
 		{
-			"name": "8. Report Match Result",
-			"event": [
+			"name": "Players",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200/201\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+					"name": "9. Create Home Player",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200/201\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+									"var res = pm.response.json();",
+									"pm.test(\"Save Player ID\", function () {",
+									"    pm.expect(res.payload).to.be.a('string');",
+									"    pm.collectionVariables.set(\"home_player_id\", res.payload);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
 						],
-						"type": "text/javascript"
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"team_id\": \"{{home_team_id}}\",\n    \"name\": \"Budi Sudarsono\",\n    \"jersey_number\": 13,\n    \"position\": \"CF\",\n    \"height\": 175.5,\n    \"weight\": 70.0\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v1/players",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"players"
+							]
+						}
 					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"home_score\": 1,\n    \"away_score\": 0,\n    \"goals\": [\n        {\n            \"player_id\": \"{{home_player_id}}\",\n            \"team_id\": \"{{home_team_id}}\",\n            \"goal_minute\": 45\n        }\n    ]\n}"
 				},
-				"url": {
-					"raw": "http://localhost:4000/api/v1/matches/{{match_id}}/result",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"api",
-						"v1",
-						"matches",
-						"{{match_id}}",
-						"result"
-					]
-				}
-			}
-		},
-		{
-			"name": "9. Get Match Report",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
-							"var res = pm.response.json();",
-							"pm.test(\"Matches specific fields\", function () {",
-							"    pm.expect(res.payload.match_status).to.eql('Home Win');",
-							"    pm.expect(res.payload.top_scorer).to.eql('Budi Sudarsono');",
-							"});"
+					"name": "10. Create Away Player",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200/201\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });",
+									"var res = pm.response.json();",
+									"pm.test(\"Save Player ID\", function () {",
+									"    pm.expect(res.payload).to.be.a('string');",
+									"    pm.collectionVariables.set(\"away_player_id\", res.payload);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
 						],
-						"type": "text/javascript"
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"team_id\": \"{{away_team_id}}\",\n    \"name\": \"Bambang Pamungkas\",\n    \"jersey_number\": 20,\n    \"position\": \"CF\",\n    \"height\": 170.0,\n    \"weight\": 68.5\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v1/players",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"players"
+							]
+						}
 					}
 				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/api/v1/matches/{{match_id}}/report",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"api",
-						"v1",
-						"matches",
-						"{{match_id}}",
-						"report"
-					]
-				}
-			}
+			]
 		},
 		{
-			"name": "10. Get All Match Reports",
-			"event": [
+			"name": "Results",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+					"name": "11. Report Match Result",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200/201\", function () { pm.expect(pm.response.code).to.be.oneOf([200, 201]); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
 						],
-						"type": "text/javascript"
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"home_score\": 1,\n    \"away_score\": 0,\n    \"goals\": [\n        {\n            \"player_id\": \"{{home_player_id}}\",\n            \"team_id\": \"{{home_team_id}}\",\n            \"goal_minute\": 45\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:4000/api/v1/matches/{{match_id}}/result",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"matches",
+								"{{match_id}}",
+								"result"
+							]
+						}
+					}
+				},
+				{
+					"name": "12. Get Match Report",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+									"var res = pm.response.json();",
+									"pm.test(\"Matches specific fields\", function () {",
+									"    pm.expect(res.payload.match_status).to.eql('Home Win');",
+									"    pm.expect(res.payload.top_scorer).to.eql('Budi Sudarsono');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/matches/{{match_id}}/report",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"matches",
+								"{{match_id}}",
+								"report"
+							]
+						}
 					}
 				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/api/v1/reports/matches",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"api",
-						"v1",
-						"reports",
-						"matches"
-					]
-				}
-			}
+			]
 		},
 		{
-			"name": "11. Get Standings",
-			"event": [
+			"name": "Reports",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
-							"var res = pm.response.json();",
-							"pm.test(\"Top team is Persija\", function () {",
-							"   if (res.payload.length > 0) {",
-							"       pm.expect(res.payload[0].team_name).to.eql('Persija Jakarta');",
-							"       pm.expect(res.payload[0].points).to.be.above(0);",
-							"   }",
-							"});"
-						],
-						"type": "text/javascript"
+					"name": "13. Get All Match Reports",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/reports/matches",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"reports",
+								"matches"
+							]
+						}
+					}
+				},
+				{
+					"name": "14. Get Standings",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+									"var res = pm.response.json();",
+									"pm.test(\"Top team is Persija\", function () {",
+									"   if (res.payload.length > 0) {",
+									"       pm.expect(res.payload[0].team_name).to.eql('Persija Jakarta');",
+									"       pm.expect(res.payload[0].points).to.be.above(0);",
+									"   }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/reporting/standings",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"reporting",
+								"standings"
+							]
+						}
+					}
+				},
+				{
+					"name": "15. Get Top Scorers",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+									"var res = pm.response.json();",
+									"pm.test(\"Top scorer is Budi\", function () {",
+									"   if (res.payload.length > 0) {",
+									"       pm.expect(res.payload[0].player_name).to.eql('Budi Sudarsono');",
+									"       pm.expect(res.payload[0].goals).to.eql(1);",
+									"   }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/api/v1/reporting/top-scorers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"api",
+								"v1",
+								"reporting",
+								"top-scorers"
+							]
+						}
 					}
 				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/api/v1/reporting/standings",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"api",
-						"v1",
-						"reporting",
-						"standings"
-					]
-				}
-			}
-		},
-		{
-			"name": "12. Get Top Scorers",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
-							"var res = pm.response.json();",
-							"pm.test(\"Top scorer is Budi\", function () {",
-							"   if (res.payload.length > 0) {",
-							"       pm.expect(res.payload[0].player_name).to.eql('Budi Sudarsono');",
-							"       pm.expect(res.payload[0].goals).to.eql(1);",
-							"   }",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:4000/api/v1/reporting/top-scorers",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "4000",
-					"path": [
-						"api",
-						"v1",
-						"reporting",
-						"top-scorers"
-					]
-				}
-			}
+			]
 		}
 	],
 	"variable": [
+		{
+			"key": "access_token",
+			"value": ""
+		},
 		{
 			"key": "home_team_id",
 			"value": ""
