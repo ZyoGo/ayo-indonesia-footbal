@@ -122,7 +122,8 @@ func NewPlayer(teamID, name string, height, weight float64, position Position, j
 		return nil, derrors.NewErrorf(derrors.ErrorCodeBadRequest, "weight must be between 0 and %.0f kg", maxWeight)
 	}
 	if !position.IsValid() {
-		return nil, derrors.NewErrorf(derrors.ErrorCodeBadRequest, "invalid position: must be a valid football position (e.g. GK, CB, CM, ST)")
+		validPositions := []string{"GK", "CB", "LB", "RB", "LWB", "RWB", "CDM", "CM", "CAM", "LM", "RM", "LW", "RW", "CF", "ST", "SS"}
+		return nil, derrors.NewErrorf(derrors.ErrorCodeBadRequest, "invalid position: must be one of [%s]", strings.Join(validPositions, ", "))
 	}
 	if jerseyNumber <= 0 || jerseyNumber > 99 {
 		return nil, derrors.NewErrorf(derrors.ErrorCodeBadRequest, "jersey number must be between 1 and 99")
@@ -158,7 +159,8 @@ func (p *Player) Update(name string, height, weight float64, position Position, 
 		return derrors.NewErrorf(derrors.ErrorCodeBadRequest, "weight must be between 0 and %.0f kg", maxWeight)
 	}
 	if !position.IsValid() {
-		return derrors.NewErrorf(derrors.ErrorCodeBadRequest, "invalid position: must be a valid football position (e.g. GK, CB, CM, ST)")
+		validPositions := []string{"GK", "CB", "LB", "RB", "LWB", "RWB", "CDM", "CM", "CAM", "LM", "RM", "LW", "RW", "CF", "ST", "SS"}
+		return derrors.NewErrorf(derrors.ErrorCodeBadRequest, "invalid position: must be one of [%s]", strings.Join(validPositions, ", "))
 	}
 	if jerseyNumber <= 0 || jerseyNumber > 99 {
 		return derrors.NewErrorf(derrors.ErrorCodeBadRequest, "jersey number must be between 1 and 99")

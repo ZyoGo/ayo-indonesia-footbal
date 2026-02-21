@@ -32,7 +32,7 @@ func (s *PlayerService) Create(ctx context.Context, player *domain.Player) (stri
 		return "", err
 	}
 	if taken {
-		return "", derrors.WrapErrorf(domain.ErrJerseyNumberTaken, derrors.ErrorCodeDuplicate, "%s", domain.ErrJerseyNumberTaken.Error())
+		return "", derrors.WrapErrorf(domain.ErrJerseyNumberTaken, derrors.ErrorCodeDuplicate, "jersey number %d is already taken", player.JerseyNumber)
 	}
 
 	// Construct valid entity via domain factory
@@ -81,7 +81,7 @@ func (s *PlayerService) Update(ctx context.Context, id string, player *domain.Pl
 		return err
 	}
 	if taken {
-		return derrors.WrapErrorf(domain.ErrJerseyNumberTaken, derrors.ErrorCodeDuplicate, "%s", domain.ErrJerseyNumberTaken.Error())
+		return derrors.WrapErrorf(domain.ErrJerseyNumberTaken, derrors.ErrorCodeDuplicate, "jersey number %d is already taken", player.JerseyNumber)
 	}
 
 	if err := existing.Update(player.Name, player.Height, player.Weight, player.Position, player.JerseyNumber); err != nil {
