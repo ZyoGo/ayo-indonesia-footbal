@@ -2,28 +2,60 @@ package response
 
 import "github.com/ZyoGo/ayo-indonesia-footbal/internal/match/domain"
 
-type MatchResponse struct {
-	ID         string `json:"id"`
-	HomeTeamID string `json:"home_team_id"`
-	AwayTeamID string `json:"away_team_id"`
-	MatchDate  string `json:"match_date"`
-	MatchTime  string `json:"match_time"`
+type MatchSummaryResponse struct {
+	ID           string `json:"id"`
+	HomeTeamID   string `json:"home_team_id"`
+	HomeTeamName string `json:"home_team_name"`
+	AwayTeamID   string `json:"away_team_id"`
+	AwayTeamName string `json:"away_team_name"`
+	MatchDate    string `json:"match_date"`
+	MatchTime    string `json:"match_time"`
 }
 
-func FromMatch(match *domain.Match) MatchResponse {
-	return MatchResponse{
-		ID:         match.ID,
-		HomeTeamID: match.HomeTeamID,
-		AwayTeamID: match.AwayTeamID,
-		MatchDate:  match.MatchDate.Format("2006-01-02"),
-		MatchTime:  match.MatchTime,
+type MatchDetailResponse struct {
+	ID           string `json:"id"`
+	HomeTeamID   string `json:"home_team_id"`
+	HomeTeamName string `json:"home_team_name"`
+	AwayTeamID   string `json:"away_team_id"`
+	AwayTeamName string `json:"away_team_name"`
+	MatchDate    string `json:"match_date"`
+	MatchTime    string `json:"match_time"`
+	Stadium      string `json:"stadium"`
+	CreatedAt    string `json:"created_at"`
+	UpdatedAt    string `json:"updated_at"`
+}
+
+func FromMatch(match *domain.Match) MatchDetailResponse {
+	return MatchDetailResponse{
+		ID:           match.ID,
+		HomeTeamID:   match.HomeTeamID,
+		HomeTeamName: match.HomeTeamName,
+		AwayTeamID:   match.AwayTeamID,
+		AwayTeamName: match.AwayTeamName,
+		MatchDate:    match.MatchDate.Format("2006-01-02"),
+		MatchTime:    match.MatchTime,
+		Stadium:      match.Stadium,
+		CreatedAt:    match.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
+		UpdatedAt:    match.UpdatedAt.Format("2006-01-02T15:04:05Z07:00"),
 	}
 }
 
-func FromMatches(matches []domain.Match) []MatchResponse {
-	result := make([]MatchResponse, len(matches))
+func FromMatchSummary(match *domain.Match) MatchSummaryResponse {
+	return MatchSummaryResponse{
+		ID:           match.ID,
+		HomeTeamID:   match.HomeTeamID,
+		HomeTeamName: match.HomeTeamName,
+		AwayTeamID:   match.AwayTeamID,
+		AwayTeamName: match.AwayTeamName,
+		MatchDate:    match.MatchDate.Format("2006-01-02"),
+		MatchTime:    match.MatchTime,
+	}
+}
+
+func FromMatches(matches []domain.Match) []MatchSummaryResponse {
+	result := make([]MatchSummaryResponse, len(matches))
 	for i, m := range matches {
-		result[i] = FromMatch(&m)
+		result[i] = FromMatchSummary(&m)
 	}
 	return result
 }

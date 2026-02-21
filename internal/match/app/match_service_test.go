@@ -54,6 +54,7 @@ func TestMatchService_CreateMatch_Success(t *testing.T) {
 		AwayTeamID: "team-2",
 		MatchDate:  time.Date(2026, 3, 15, 0, 0, 0, 0, time.UTC),
 		MatchTime:  "19:30",
+		Stadium:    "Gelora Bung Karno",
 	}
 
 	mockMatchRepo.EXPECT().Create(ctx, gomock.Any()).Return(nil)
@@ -76,6 +77,7 @@ func TestMatchService_CreateMatch_SameTeamError(t *testing.T) {
 		AwayTeamID: "team-1",
 		MatchDate:  time.Date(2026, 3, 15, 0, 0, 0, 0, time.UTC),
 		MatchTime:  "19:30",
+		Stadium:    "Gelora Bung Karno",
 	}
 
 	id, err := svc.CreateMatch(ctx, input)
@@ -97,6 +99,7 @@ func TestMatchService_CreateMatch_InvalidTime(t *testing.T) {
 		AwayTeamID: "team-2",
 		MatchDate:  time.Date(2026, 3, 15, 0, 0, 0, 0, time.UTC),
 		MatchTime:  "25:00",
+		Stadium:    "Gelora Bung Karno",
 	}
 
 	id, err := svc.CreateMatch(ctx, input)
@@ -160,6 +163,7 @@ func TestMatchService_CreateMatch_RepoError(t *testing.T) {
 		AwayTeamID: "team-2",
 		MatchDate:  time.Date(2026, 3, 15, 0, 0, 0, 0, time.UTC),
 		MatchTime:  "19:30",
+		Stadium:    "Gelora Bung Karno",
 	}
 
 	mockMatchRepo.EXPECT().Create(ctx, gomock.Any()).Return(derrors.WrapErrorf(errors.New("db error"), derrors.ErrorCodeInternal, "failed to create match"))
@@ -277,7 +281,7 @@ func TestMatchService_ReportResult_Success(t *testing.T) {
 		},
 	}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(false, nil)
 	mockResultRepo.EXPECT().Create(ctx, gomock.Any()).Return(nil)
 
@@ -322,7 +326,7 @@ func TestMatchService_ReportResult_AlreadyExists(t *testing.T) {
 		{PlayerID: "player-1", TeamID: "team-1", GoalMinute: 10},
 	}}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(true, nil)
 
 	id, err := svc.ReportResult(ctx, matchID, result)
@@ -347,7 +351,7 @@ func TestMatchService_ReportResult_ExistsCheckRepoError(t *testing.T) {
 		{PlayerID: "player-1", TeamID: "team-1", GoalMinute: 10},
 	}}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(false, derrors.WrapErrorf(errors.New("db error"), derrors.ErrorCodeInternal, "failed to check result"))
 
 	id, err := svc.ReportResult(ctx, matchID, result)
@@ -375,7 +379,7 @@ func TestMatchService_ReportResult_ScoreMismatch(t *testing.T) {
 		},
 	}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(false, nil)
 
 	id, err := svc.ReportResult(ctx, matchID, result)
@@ -399,7 +403,7 @@ func TestMatchService_ReportResult_NegativeScore(t *testing.T) {
 		Goals:     []domain.Goal{},
 	}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(false, nil)
 
 	id, err := svc.ReportResult(ctx, matchID, result)
@@ -425,7 +429,7 @@ func TestMatchService_ReportResult_InvalidGoalMinute(t *testing.T) {
 		},
 	}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(false, nil)
 
 	id, err := svc.ReportResult(ctx, matchID, result)
@@ -451,7 +455,7 @@ func TestMatchService_ReportResult_GoalMinuteExceedsMax(t *testing.T) {
 		},
 	}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(false, nil)
 
 	id, err := svc.ReportResult(ctx, matchID, result)
@@ -477,7 +481,7 @@ func TestMatchService_ReportResult_MissingPlayerID(t *testing.T) {
 		},
 	}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(false, nil)
 
 	id, err := svc.ReportResult(ctx, matchID, result)
@@ -503,7 +507,7 @@ func TestMatchService_ReportResult_MissingTeamID(t *testing.T) {
 		},
 	}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(false, nil)
 
 	id, err := svc.ReportResult(ctx, matchID, result)
@@ -527,7 +531,7 @@ func TestMatchService_ReportResult_DrawWithNoGoals(t *testing.T) {
 		Goals:     []domain.Goal{},
 	}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(false, nil)
 	mockResultRepo.EXPECT().Create(ctx, gomock.Any()).Return(nil)
 
@@ -555,7 +559,7 @@ func TestMatchService_ReportResult_HomeScoreMismatch(t *testing.T) {
 		},
 	}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(false, nil)
 
 	id, err := svc.ReportResult(ctx, matchID, result)
@@ -582,7 +586,7 @@ func TestMatchService_ReportResult_AwayScoreMismatch(t *testing.T) {
 		},
 	}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(false, nil)
 
 	id, err := svc.ReportResult(ctx, matchID, result)
@@ -609,7 +613,7 @@ func TestMatchService_ReportResult_InvalidGoalTeamID(t *testing.T) {
 		},
 	}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(false, nil)
 
 	id, err := svc.ReportResult(ctx, matchID, result)
@@ -633,7 +637,7 @@ func TestMatchService_ReportResult_SaveRepoError(t *testing.T) {
 		Goals:     []domain.Goal{},
 	}
 
-	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2"}, nil)
+	mockMatchRepo.EXPECT().FindByID(ctx, matchID).Return(&domain.Match{ID: matchID, HomeTeamID: "team-1", AwayTeamID: "team-2", Stadium: "Gelora Bung Karno"}, nil)
 	mockResultRepo.EXPECT().ExistsByMatchID(ctx, matchID).Return(false, nil)
 	mockResultRepo.EXPECT().Create(ctx, gomock.Any()).Return(derrors.WrapErrorf(errors.New("db error"), derrors.ErrorCodeInternal, "failed to save result"))
 

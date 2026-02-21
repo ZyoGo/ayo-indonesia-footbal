@@ -11,6 +11,7 @@ type CreateMatchRequest struct {
 	AwayTeamID string `json:"away_team_id" binding:"required"`
 	MatchDate  string `json:"match_date" binding:"required"` // YYYY-MM-DD
 	MatchTime  string `json:"match_time" binding:"required"` // HH:MM
+	Stadium    string `json:"stadium" binding:"required"`
 }
 
 func (r CreateMatchRequest) ToDomain() *domain.Match {
@@ -20,6 +21,7 @@ func (r CreateMatchRequest) ToDomain() *domain.Match {
 		AwayTeamID: r.AwayTeamID,
 		MatchDate:  date,
 		MatchTime:  r.MatchTime,
+		Stadium:    r.Stadium,
 	}
 }
 

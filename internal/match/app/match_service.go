@@ -26,7 +26,7 @@ func NewMatchService(
 }
 
 func (s *MatchService) CreateMatch(ctx context.Context, match *domain.Match) (string, error) {
-	newMatch, err := domain.NewMatch(match.HomeTeamID, match.AwayTeamID, match.MatchDate, match.MatchTime)
+	newMatch, err := domain.NewMatch(match.HomeTeamID, match.AwayTeamID, match.MatchDate, match.MatchTime, match.Stadium)
 	if err != nil {
 		return "", err
 	}

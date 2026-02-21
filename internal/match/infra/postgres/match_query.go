@@ -2,27 +2,31 @@ package postgres
 
 const (
 	queryInsertMatch = `
-		INSERT INTO matches (id, home_team_id, away_team_id, match_date, match_time, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		INSERT INTO matches (id, home_team_id, away_team_id, match_date, match_time, stadium, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	`
 
 	queryFindMatchByID = `
-		SELECT id, home_team_id, away_team_id, match_date, match_time, created_at, updated_at, deleted_at
-		FROM matches
-		WHERE id = $1 AND deleted_at IS NULL
+		SELECT m.id, m.home_team_id, m.away_team_id, m.match_date, m.match_time, m.stadium, ht.name AS home_team_name, at.name AS away_team_name, m.created_at, m.updated_at, m.deleted_at
+		FROM matches m
+		JOIN teams ht ON ht.id = m.home_team_id
+		JOIN teams at ON at.id = m.away_team_id
+		WHERE m.id = $1 AND m.deleted_at IS NULL
 	`
 
 	queryFindAllMatches = `
-		SELECT id, home_team_id, away_team_id, match_date, match_time, created_at, updated_at, deleted_at
-		FROM matches
-		WHERE deleted_at IS NULL
-		ORDER BY match_date DESC, match_time DESC
+		SELECT m.id, m.home_team_id, m.away_team_id, m.match_date, m.match_time, m.stadium, ht.name AS home_team_name, at.name AS away_team_name, m.created_at, m.updated_at, m.deleted_at
+		FROM matches m
+		JOIN teams ht ON ht.id = m.home_team_id
+		JOIN teams at ON at.id = m.away_team_id
+		WHERE m.deleted_at IS NULL
+		ORDER BY m.match_date DESC, m.match_time DESC
 	`
 
 	queryUpdateMatch = `
 		UPDATE matches
-		SET home_team_id = $1, away_team_id = $2, match_date = $3, match_time = $4, updated_at = $5
-		WHERE id = $6 AND deleted_at IS NULL
+		SET home_team_id = $1, away_team_id = $2, match_date = $3, match_time = $4, stadium = $5, updated_at = $6
+		WHERE id = $7 AND deleted_at IS NULL
 	`
 
 	queryDeleteMatch = `UPDATE matches SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL`

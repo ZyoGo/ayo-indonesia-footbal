@@ -12,20 +12,24 @@ import (
 var matchTimeRegex = regexp.MustCompile(`^([01]\d|2[0-3]):([0-5]\d)$`)
 
 type Match struct {
-	ID         string
-	HomeTeamID string
-	AwayTeamID string
-	MatchDate  time.Time
-	MatchTime  string // HH:MM format
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	DeletedAt  *time.Time
+	ID           string
+	HomeTeamID   string
+	AwayTeamID   string
+	MatchDate    time.Time
+	MatchTime    string // HH:MM format
+	Stadium      string
+	HomeTeamName string // Populated on read
+	AwayTeamName string // Populated on read
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	DeletedAt    *time.Time
 }
 
-func NewMatch(homeTeamID, awayTeamID string, matchDate time.Time, matchTime string) (*Match, error) {
+func NewMatch(homeTeamID, awayTeamID string, matchDate time.Time, matchTime string, stadium string) (*Match, error) {
 	homeTeamID = strings.TrimSpace(homeTeamID)
 	awayTeamID = strings.TrimSpace(awayTeamID)
 	matchTime = strings.TrimSpace(matchTime)
+	stadium = strings.TrimSpace(stadium)
 
 	if homeTeamID == "" {
 		return nil, derrors.NewErrorf(derrors.ErrorCodeBadRequest, "home team ID is required")
@@ -42,6 +46,9 @@ func NewMatch(homeTeamID, awayTeamID string, matchDate time.Time, matchTime stri
 	if !matchTimeRegex.MatchString(matchTime) {
 		return nil, derrors.NewErrorf(derrors.ErrorCodeBadRequest, "match time must be in HH:MM format (00:00 - 23:59)")
 	}
+	if stadium == "" {
+		return nil, derrors.NewErrorf(derrors.ErrorCodeBadRequest, "stadium is required")
+	}
 	now := time.Now()
 	// Allow matches on the same day (today) or in the future
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
@@ -55,6 +62,7 @@ func NewMatch(homeTeamID, awayTeamID string, matchDate time.Time, matchTime stri
 		AwayTeamID: awayTeamID,
 		MatchDate:  matchDate,
 		MatchTime:  matchTime,
+		Stadium:    stadium,
 		CreatedAt:  now,
 		UpdatedAt:  now,
 	}, nil
