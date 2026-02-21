@@ -1,0 +1,695 @@
+{
+  "info": {
+    "_postman_id": "d50311d1-0bdc-4c37-b6c7-ebe3af8c9f3b",
+    "name": "Football Ayo Indonesia",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "17655708"
+  },
+  "item": [
+    {
+      "name": "Clubs",
+      "item": [
+        {
+          "name": "Create A New Team",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{ACCESS_TOKEN}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Persija Jakartaa\",\r\n    \"logo_url\": \"https://example.com/persija.png\",\r\n    \"year_founded\": 1928,\r\n    \"address\": \"Jakarta\",\r\n    \"city\": \"Jakarta\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/teams",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "teams"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST http://localhost:8080/api/v1/teams \\\r\n     -H \"Content-Type: application/json\" \\\r\n     -d '{\r\n       \"name\": \"Persija Jakarta\",\r\n       \"logo_url\": \"https://example.com/persija.png\",\r\n       \"year_founded\": 1928,\r\n       \"address\": \"Jakarta\",\r\n       \"city\": \"Jakarta\"\r\n     }'"
+          },
+          "response": []
+        },
+        {
+          "name": "Get List Team",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/teams",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "teams"
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET http://localhost:8080/api/v1/teams"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Team By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/teams/:id",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "teams",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "01KHZHH51AAYRTZRYT9TWT8598"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET http://localhost:8080/api/v1/teams/{team_id}"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Team",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Persija Jakarta Updated\",\r\n    \"logo_url\": \"https://example.com/persija_new.png\",\r\n    \"year_founded\": 1928,\r\n    \"address\": \"Jakarta Southern\",\r\n    \"city\": \"Jakarta\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/teams/:id",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "teams",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "01KHZHH51AAYRTZRYT9TWT8598"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X PUT http://localhost:8080/api/v1/teams/{team_id} \\\r\n     -H \"Content-Type: application/json\" \\\r\n     -d '{\r\n       \"name\": \"Persija Jakarta Updated\",\r\n       \"logo_url\": \"https://example.com/persija_new.png\",\r\n       \"year_founded\": 1928,\r\n       \"address\": \"Jakarta Southern\",\r\n       \"city\": \"Jakarta\"\r\n     }'"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Team",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/teams/:id",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "teams",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "01KHZJPWEBP89KYPAVW3GCG00Z"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X DELETE http://localhost:8080/api/v1/teams/{team_id}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Matches",
+      "item": [
+        {
+          "name": "Report Match Result",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n       \"home_score\": 0,\r\n       \"away_score\": 1,\r\n       \"goals\": [\r\n         {\r\n           \"player_id\": \"01KHZJR9S6F7A5GEE368DSGYJ8\",\r\n           \"team_id\": \"01KHZHK0ZCW6R8KH8EHCDERPFY\",\r\n           \"goal_minute\": 23\r\n         }\r\n       ]\r\n     }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/matches/:id/result",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "matches",
+                ":id",
+                "result"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "01KHZKX20TTZ3S6CA0VWGEFV5A"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST http://localhost:8080/api/v1/matches/{match_id}/result \\\r\n     -H \"Content-Type: application/json\" \\\r\n     -d '{\r\n       \"home_score\": 2,\r\n       \"away_score\": 1,\r\n       \"goals\": [\r\n         {\r\n           \"player_id\": \"{player_id_1}\",\r\n           \"team_id\": \"{home_team_id}\",\r\n           \"goal_minute\": 23\r\n         },\r\n         {\r\n           \"player_id\": \"{player_id_2}\",\r\n           \"team_id\": \"{home_team_id}\",\r\n           \"goal_minute\": 45\r\n         },\r\n         {\r\n           \"player_id\": \"{player_id_3}\",\r\n           \"team_id\": \"{away_team_id}\",\r\n           \"goal_minute\": 10\r\n         }\r\n       ]\r\n     }'"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Match",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"home_team_id\": \"01KHZKVMXHD1MJVK5GJRV0PWFP\",\r\n    \"away_team_id\": \"01KHZHK0ZCW6R8KH8EHCDERPFY\",\r\n    \"match_date\": \"2026-02-21\",\r\n    \"match_time\": \"19:00\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/matches",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "matches"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST http://localhost:8080/api/v1/matches \\\r\n     -H \"Content-Type: application/json\" \\\r\n     -d '{\r\n       \"home_team_id\": \"{home_team_id}\",\r\n       \"away_team_id\": \"{away_team_id}\",\r\n       \"match_date\": \"2026-03-01\",\r\n       \"match_time\": \"19:00\"\r\n     }'"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Matches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/matches",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "matches"
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET http://localhost:8080/api/v1/matches"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Match by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/matches/:id",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "matches",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "01KHZRT0F61HBMBS8G22CA245F"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET http://localhost:8080/api/v1/matches/{match_id}"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Match Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/reports/matches",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reports",
+                "matches"
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET http://localhost:8080/api/v1/reports/matches"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Match Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/matches/:id/report",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "matches",
+                ":id",
+                "report"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET http://localhost:8080/api/v1/matches/{match_id}/report"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reporting",
+      "item": [
+        {
+          "name": "Get League Standings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/reporting/standings",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reporting",
+                "standings"
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET http://localhost:8080/api/v1/reporting/standings"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Top Scorers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/reporting/top-scorers",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reporting",
+                "top-scorers"
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET http://localhost:8080/api/v1/reporting/top-scorers"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Players",
+      "item": [
+        {
+          "name": "Create A New Player",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"team_id\": \"01KHZHK0ZCW6R8KH8EHCDERPFY\",\r\n    \"name\": \"Boaz\",\r\n    \"height\": 170.5,\r\n    \"weight\": 68.0,\r\n    \"position\": \"ST\",\r\n    \"jersey_number\": 23\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/players",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "players"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST http://localhost:8080/api/v1/players \\\r\n     -H \"Content-Type: application/json\" \\\r\n     -d '{\r\n       \"team_id\": \"{team_id}\",\r\n       \"name\": \"Bambang Pamungkas\",\r\n       \"height\": 170.5,\r\n       \"weight\": 68.0,\r\n       \"position\": \"FW\",\r\n       \"jersey_number\": 20\r\n     }'"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Player By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/players/:id",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "players",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "01KHZJR9S6F7A5GEE368DSGYJ8"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET http://localhost:8080/api/v1/players/{player_id}"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Players by Team ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/teams/:id/players",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "teams",
+                ":id",
+                "players"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "01KHZHK0ZCW6R8KH8EHCDERPFY"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X GET http://localhost:8080/api/v1/teams/{team_id}/players"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Player",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Bambang Pamungkas Updated\",\r\n    \"height\": 171.0,\r\n    \"weight\": 69.0,\r\n    \"position\": \"CB\",\r\n    \"jersey_number\": 20\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/players/:id",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "players",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "01KHZJR9S6F7A5GEE368DSGYJ8"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X PUT http://localhost:8080/api/v1/players/{player_id} \\\r\n     -H \"Content-Type: application/json\" \\\r\n     -d '{\r\n       \"name\": \"Bambang Pamungkas Updated\",\r\n       \"height\": 171.0,\r\n       \"weight\": 69.0,\r\n       \"position\": \"FW\",\r\n       \"jersey_number\": 20\r\n     }'"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Player",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/players/:id",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "players",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "01KHZK56WSZBQGKSXSG7F5B9PG"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X DELETE http://localhost:8080/api/v1/players/{player_id}"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Upload",
+      "item": [
+        {
+          "name": "Upload Endpoint",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "type": "file",
+                  "key": "file",
+                  "src": "/C:/Users/Noodle/OneDrive/Pictures/aaa.jpg"
+                },
+                {
+                  "type": "text",
+                  "key": "type",
+                  "value": "team-logo"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/uploads",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "uploads"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST http://localhost:4000/api/v1/uploads \\\n  -F \"file=@/path/to/logo.png\" \\\n  -F \"type=team-logo\""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// 1. Parse the JSON response body\r",
+                  "const responseData = pm.response.json();\r",
+                  "\r",
+                  "// 2. Extract the token from the payload\r",
+                  "const token = responseData.payload.token;\r",
+                  "\r",
+                  "// 3. Save it to a Collection Variable (Recommended)\r",
+                  "pm.collectionVariables.set(\"ACCESS_TOKEN\", token);\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/v1/auth/login",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Generated from cURL: curl -X POST http://localhost:4000/api/v1/auth/login \\\r\n  -H \"Content-Type: application/json\" \\\r\n  -d '{\"username\": \"admin\", \"password\": \"admin123\"}'\r\n"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": ""
+    },
+    {
+      "key": "ACCESS_TOKEN",
+      "value": ""
+    }
+  ]
+}
