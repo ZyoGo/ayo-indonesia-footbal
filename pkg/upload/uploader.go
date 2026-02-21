@@ -82,6 +82,62 @@ func (u *Uploader) UploadFile(fileHeader *multipart.FileHeader, subdirectory str
 	return fileURL, nil
 }
 
+// UploadWithType uploads a file with type-based validation and returns the file URL
+func (u *Uploader) UploadWithType(fileHeader *multipart.FileHeader, uploadType UploadType) (string, error) {
+	if !uploadType.IsValid() {
+		return "", ErrInvalidUploadType
+	}
+
+	if err := ValidateFile(uploadType, fileHeader); err != nil {
+		return "", err
+	}
+
+	config := uploadType.Config()
+	subdirectory := string(uploadType)
+
+	uploadDir := filepath.Join(u.BasePath, subdirectory)
+	if err := os.MkdirAll(uploadDir, 0755); err != nil {
+		return "", derrors.WrapErrorf(err, derrors.ErrorCodeInternal, "failed to create upload directory")
+	}
+
+	ext := strings.ToLower(filepath.Ext(fileHeader.Filename))
+	if !isAllowedExtension(ext, config.AllowedExtensions) {
+		return "", ErrFileTypeNotAllowed
+	}
+
+	filename := fmt.Sprintf("%s%s", ulid.Make().String(), ext)
+	filePath := filepath.Join(uploadDir, filename)
+
+	src, err := fileHeader.Open()
+	if err != nil {
+		return "", derrors.WrapErrorf(err, derrors.ErrorCodeInternal, "failed to open uploaded file")
+	}
+	defer src.Close()
+
+	dst, err := os.Create(filePath)
+	if err != nil {
+		return "", derrors.WrapErrorf(err, derrors.ErrorCodeInternal, "failed to create destination file")
+	}
+	defer dst.Close()
+
+	if _, err := io.Copy(dst, src); err != nil {
+		return "", derrors.WrapErrorf(err, derrors.ErrorCodeInternal, "failed to save file")
+	}
+
+	fileURL := fmt.Sprintf("%s/%s/%s", u.URLPrefix, subdirectory, filename)
+
+	return fileURL, nil
+}
+
+func isAllowedExtension(ext string, allowed []string) bool {
+	for _, a := range allowed {
+		if a == ext {
+			return true
+		}
+	}
+	return false
+}
+
 // DeleteFile deletes a file by URL
 func (u *Uploader) DeleteFile(fileURL string) error {
 	// Extract filename from URL
