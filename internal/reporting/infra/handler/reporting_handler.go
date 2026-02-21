@@ -2,8 +2,10 @@ package handler
 
 import (
 	"net/http"
+
 	"github.com/ZyoGo/ayo-indonesia-footbal/internal/reporting/app"
 	"github.com/ZyoGo/ayo-indonesia-footbal/internal/reporting/infra/handler/response"
+	common "github.com/ZyoGo/ayo-indonesia-footbal/pkg/http"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,7 +29,7 @@ func (h *ReportingHandler) GetStandings(c *gin.Context) {
 		resp = append(resp, response.FromStandingDomain(s))
 	}
 
-	c.JSON(http.StatusOK, resp)
+	c.JSON(http.StatusOK, common.NewSuccessResponseWithData(resp))
 }
 
 func (h *ReportingHandler) GetTopScorers(c *gin.Context) {
@@ -42,7 +44,7 @@ func (h *ReportingHandler) GetTopScorers(c *gin.Context) {
 		resp = append(resp, response.FromTopScorerDomain(s))
 	}
 
-	c.JSON(http.StatusOK, resp)
+	c.JSON(http.StatusOK, common.NewSuccessResponseWithData(resp))
 }
 
 func RegisterRoutes(rg *gin.RouterGroup, h *ReportingHandler) {
