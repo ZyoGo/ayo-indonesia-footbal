@@ -1,0 +1,21 @@
+FROM golang:1.26-alpine
+
+WORKDIR /app
+
+# Install git and other utilities
+RUN apk add --no-cache git tzdata
+
+# Install air for hot reloading
+RUN go install github.com/air-verse/air@latest
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies
+RUN go mod download
+
+# Copy the source code
+COPY . .
+
+# Run air for hot reload by default
+CMD ["air", "-c", ".air.toml"]
