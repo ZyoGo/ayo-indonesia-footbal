@@ -49,7 +49,7 @@ func (h *PlayerHandler) GetByID(c *gin.Context) {
 }
 
 func (h *PlayerHandler) GetByTeamID(c *gin.Context) {
-	teamID := c.Param("teamId")
+	teamID := c.Param("id")
 
 	players, err := h.service.GetByTeamID(c.Request.Context(), teamID)
 	if err != nil {

@@ -15,7 +15,7 @@ func RegisterRoutes(rg *gin.RouterGroup, teamHandler *TeamHandler, playerHandler
 		teams.DELETE("/:id", teamHandler.Delete)
 
 		// Nested: players under a team
-		teams.GET("/:teamId/players", playerHandler.GetByTeamID)
+		teams.GET("/:id/players", playerHandler.GetByTeamID)
 	}
 
 	// Player routes
