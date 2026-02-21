@@ -1,0 +1,17 @@
+[app]
+port = 4000
+allowedOrigins = ["*"]
+
+[database]
+name = "football_db"
+username = "postgres"
+password = "password"
+port = 5432
+address = "football_db"
+driver = "postgres"
+
+[jwt]
+private_key_path = "./keys/private.pem"
+public_key_path = "./keys/public.pem"
+issuer = "ayo-indonesia-football"
+subject = "auth"
