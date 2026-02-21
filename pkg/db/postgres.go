@@ -49,7 +49,12 @@ func NewDatabaseConnection() *pgxpool.Pool {
 	// Create the connection pool
 	pool, err := pgxpool.NewWithConfig(context.Background(), dbConfig)
 	if err != nil {
-		logger.Get().With().ErrorContext(context.Background(), "Failed to establish database connection", slog.Any("error", err))
+		logger.Get().With().ErrorContext(context.Background(), "Failed to establish database pool", slog.Any("error", err))
+		os.Exit(1)
+	}
+
+	if err := pool.Ping(context.Background()); err != nil {
+		logger.Get().With().ErrorContext(context.Background(), "Failed to ping database connection", slog.Any("error", err))
 		os.Exit(1)
 	}
 
