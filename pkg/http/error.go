@@ -95,21 +95,21 @@ func RenderErrorResponse(err error) (resp ErrorResponse) {
 		logger.Get().Error("error response", "error", ierr.Error())
 		switch ierr.Code() {
 		case derrors.ErrorCodeBadRequest:
-			return ErrorResponse{Status: BadRequestStatus, Code: http.StatusBadRequest, Message: ierr.Error(), Internal: ierr}
+			return ErrorResponse{Status: BadRequestStatus, Code: http.StatusBadRequest, Message: ierr.Message(), Internal: ierr}
 		case derrors.ErrorCodeUnauthorized:
-			return ErrorResponse{Status: UnauthorizedStatus, Code: http.StatusUnauthorized, Message: ierr.Error(), Internal: ierr}
+			return ErrorResponse{Status: UnauthorizedStatus, Code: http.StatusUnauthorized, Message: ierr.Message(), Internal: ierr}
 		case derrors.ErrorCodeForbidden:
-			return ErrorResponse{Status: ForbiddenStatus, Code: http.StatusForbidden, Message: ierr.Error(), Internal: ierr}
+			return ErrorResponse{Status: ForbiddenStatus, Code: http.StatusForbidden, Message: ierr.Message(), Internal: ierr}
 		case derrors.ErrorCodeNotFound:
-			return ErrorResponse{Status: NotFoundStatus, Code: http.StatusNotFound, Message: ierr.Error(), Internal: ierr}
+			return ErrorResponse{Status: NotFoundStatus, Code: http.StatusNotFound, Message: ierr.Message(), Internal: ierr}
 		case derrors.ErrorCodeDuplicate:
-			return ErrorResponse{Status: DuplicateStatus, Code: http.StatusBadRequest, Message: "Duplicate", Internal: ierr}
+			return ErrorResponse{Status: DuplicateStatus, Code: http.StatusBadRequest, Message: ierr.Message(), Internal: ierr}
 		case derrors.ErrorCodeAlreadyRegistered:
 			return ErrorResponse{Status: BadRequestStatus, Code: http.StatusBadRequest, Message: "Already Registered", Internal: ierr}
 		case derrors.ErrorCodeInvalidArgument:
 			return ErrorResponse{Status: BadRequestStatus, Code: http.StatusBadRequest, Message: "Bad Request", Internal: ierr}
 		case derrors.ErrorCodeCustomBadRequest:
-			return ErrorResponse{Status: BadRequestStatus, Code: http.StatusBadRequest, Message: ierr.Error(), Internal: ierr}
+			return ErrorResponse{Status: BadRequestStatus, Code: http.StatusBadRequest, Message: ierr.Message(), Internal: ierr}
 		}
 	}
 

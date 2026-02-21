@@ -49,6 +49,11 @@ func (e *Error) Error() string {
 	return e.msg
 }
 
+// Message returns only the custom message of the error, without the wrapped error text.
+func (e *Error) Message() string {
+	return e.msg
+}
+
 // Unwrap returns the wrapped error, if any.
 func (e *Error) Unwrap() error {
 	return e.orig
