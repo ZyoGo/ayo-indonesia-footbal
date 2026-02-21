@@ -4,7 +4,33 @@ This document provides a comprehensive list of all API endpoints for the Ayo Ind
 
 **Base URL:** `http://localhost:4000/api/v1`
 
-## 1. Club Management
+**Note:** Protected routes require `Authorization: Bearer <token>` header. Get the token from `/auth/login`.
+
+## 1. Authentication
+
+### Register
+```bash
+curl -X POST http://localhost:4000/api/v1/auth/register \
+     -H "Content-Type: application/json" \
+     -d '{
+       "username": "admin",
+       "password": "password123"
+     }'
+```
+
+### Login
+```bash
+curl -X POST http://localhost:4000/api/v1/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{
+       "username": "admin",
+       "password": "password123"
+     }'
+```
+
+---
+
+## 2. Club Management
 
 ### Teams
 
@@ -12,6 +38,7 @@ This document provides a comprehensive list of all API endpoints for the Ayo Ind
 ```bash
 curl -X POST http://localhost:4000/api/v1/teams \
      -H "Content-Type: application/json" \
+     -H "Authorization: Bearer <token>" \
      -d '{
        "name": "Persija Jakarta",
        "logo_url": "https://example.com/persija.png",
@@ -35,6 +62,7 @@ curl -X GET http://localhost:4000/api/v1/teams/{team_id}
 ```bash
 curl -X PUT http://localhost:4000/api/v1/teams/{team_id} \
      -H "Content-Type: application/json" \
+     -H "Authorization: Bearer <token>" \
      -d '{
        "name": "Persija Jakarta Updated",
        "logo_url": "https://example.com/persija_new.png",
@@ -46,7 +74,8 @@ curl -X PUT http://localhost:4000/api/v1/teams/{team_id} \
 
 #### Delete Team
 ```bash
-curl -X DELETE http://localhost:4000/api/v1/teams/{team_id}
+curl -X DELETE http://localhost:4000/api/v1/teams/{team_id} \
+     -H "Authorization: Bearer <token>"
 ```
 
 ---
@@ -57,6 +86,7 @@ curl -X DELETE http://localhost:4000/api/v1/teams/{team_id}
 ```bash
 curl -X POST http://localhost:4000/api/v1/players \
      -H "Content-Type: application/json" \
+     -H "Authorization: Bearer <token>" \
      -d '{
        "team_id": "{team_id}",
        "name": "Bambang Pamungkas",
@@ -81,6 +111,7 @@ curl -X GET http://localhost:4000/api/v1/teams/{team_id}/players
 ```bash
 curl -X PUT http://localhost:4000/api/v1/players/{player_id} \
      -H "Content-Type: application/json" \
+     -H "Authorization: Bearer <token>" \
      -d '{
        "team_id": "{team_id}",
        "name": "Bambang Pamungkas Updated",
@@ -93,7 +124,8 @@ curl -X PUT http://localhost:4000/api/v1/players/{player_id} \
 
 #### Delete Player
 ```bash
-curl -X DELETE http://localhost:4000/api/v1/players/{player_id}
+curl -X DELETE http://localhost:4000/api/v1/players/{player_id} \
+     -H "Authorization: Bearer <token>"
 ```
 
 ---
@@ -104,6 +136,7 @@ curl -X DELETE http://localhost:4000/api/v1/players/{player_id}
 ```bash
 curl -X POST http://localhost:4000/api/v1/matches \
      -H "Content-Type: application/json" \
+     -H "Authorization: Bearer <token>" \
      -d '{
        "home_team_id": "{home_team_id}",
        "away_team_id": "{away_team_id}",
@@ -127,6 +160,7 @@ curl -X GET http://localhost:4000/api/v1/matches/{match_id}
 ```bash
 curl -X POST http://localhost:4000/api/v1/matches/{match_id}/result \
      -H "Content-Type: application/json" \
+     -H "Authorization: Bearer <token>" \
      -d '{
        "home_score": 1,
        "away_score": 0,
@@ -162,4 +196,15 @@ curl -X GET http://localhost:4000/api/v1/reporting/standings
 ### Get Top Scorers
 ```bash
 curl -X GET http://localhost:4000/api/v1/reporting/top-scorers
+```
+
+---
+
+## 4. Upload
+
+### Upload File
+```bash
+curl -X POST http://localhost:4000/api/v1/uploads \
+     -H "Authorization: Bearer <token>" \
+     -F "file=@/path/to/file.jpg"
 ```

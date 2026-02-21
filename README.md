@@ -4,6 +4,7 @@ A robust, scalable backend service for managing football clubs, matches, and com
 
 ## Features
 
+*   **Authentication**: JWT-based auth with login/register. Protects write operations.
 *   **Club Management**: Register teams and manage player rosters. Protects against duplicate jersey numbers within a team.
 *   **Match Management**: Schedule matches between teams, ensuring valid times and no double-booking. Report match results and individual player goals with strict validation (ensuring goal counts match the final score).
 *   **Reporting & Analytics**: Automatically aggregates match results into real-time standings (klasemen) based on Points, Goal Difference, and Goals For. Tracks top goalscorers across the competition.
@@ -70,21 +71,35 @@ make test
 
 All endpoints are prefixed with `/api/v1`.
 
-### Club Context (`/clubs`)
-*   `POST /clubs`: Register a new team.
-*   `GET /clubs`: List all teams.
-*   `POST /clubs/:id/players`: Add a player to a team.
-*   `GET /clubs/:id/players`: List all players in a team.
+### Authentication (`/auth`)
+*   `POST /auth/register`: Register a new user.
+*   `POST /auth/login`: Login and receive JWT token.
+
+### Club Context (`/teams`, `/players`)
+*   `POST /teams`: Register a new team (protected).
+*   `GET /teams`: List all teams.
+*   `GET /teams/:id`: Get team by ID.
+*   `PUT /teams/:id`: Update team (protected).
+*   `DELETE /teams/:id`: Delete team (protected).
+*   `POST /players`: Add a player to a team (protected).
+*   `GET /players/:id`: Get player by ID.
+*   `GET /teams/:id/players`: List all players in a team.
+*   `PUT /players/:id`: Update player (protected).
+*   `DELETE /players/:id`: Delete player (protected).
 
 ### Match Context (`/matches`)
-*   `POST /matches`: Schedule a new match.
+*   `POST /matches`: Schedule a new match (protected).
 *   `GET /matches`: List all matches.
+*   `GET /matches/:id`: Get match by ID.
 *   `GET /matches/:id/report`: Get a detailed report for a specific match.
-*   `POST /matches/:id/results`: Report the final result and goal scorers for a match.
+*   `POST /matches/:id/result`: Report the final result and goal scorers for a match (protected).
 
 ### Reporting Context (`/reporting`)
 *   `GET /reporting/standings`: Get the current competition standings (klasemen).
 *   `GET /reporting/top-scorers`: Get the top goalscorers leaderboard.
+
+### Upload (`/uploads`)
+*   `POST /uploads`: Upload a file (protected).
 
 ## Project Structure
 

@@ -10,11 +10,12 @@ The application is built using two primary architectural patterns:
 
 ### Bounded Contexts (DDD)
 
-We have divided the system into three distinct bounded contexts to ensure high cohesion and loose coupling:
+We have divided the system into four distinct bounded contexts to ensure high cohesion and loose coupling:
 
-1.  **Club Context**: Manages the core entities of football teams and their players. Responsible for team registration and squad management.
-2.  **Match Context**: Manages match scheduling, storing results, and tracking individual match events (e.g., goals scored, minutes played). Focuses purely on the transactional aspect of playing a game.
-3.  **Reporting Context**: A read-heavy context responsible for aggregating data from matches to generate standings (klasemen) and player leaderboards (top scorers). It observes match results but does not manage them directly.
+1.  **Auth Context**: Manages user authentication and JWT token generation.
+2.  **Club Context**: Manages the core entities of football teams and their players. Responsible for team registration and squad management.
+3.  **Match Context**: Manages match scheduling, storing results, and tracking individual match events (e.g., goals scored, minutes played). Focuses purely on the transactional aspect of playing a game.
+4.  **Reporting Context**: A read-heavy context responsible for aggregating data from matches to generate standings (klasemen) and player leaderboards (top scorers). It observes match results but does not manage them directly.
 
 ---
 
@@ -48,6 +49,11 @@ Each bounded context (inside the `internal/` directory) strictly follows Clean A
 │   └── http/                 # Application entrypoint (main.go) and module wiring
 ├── config/                   # Configuration binding and defaults (Viper)
 ├── internal/                 # Private application code (Bounded Contexts)
+│   ├── auth/                 # Auth Context
+│   │   ├── app/              # Application logic (Services)
+│   │   ├── domain/           # Core rules and interfaces
+│   │   ├── infra/           # Postgres implementations, HTTP Handlers
+│   │   └── mock/             # Generated mocks for testing
 │   ├── club/                 # Club Context
 │   │   ├── app/              # Application logic (Services)
 │   │   ├── domain/           # Core rules and interfaces
@@ -57,7 +63,7 @@ Each bounded context (inside the `internal/` directory) strictly follows Clean A
 │   │   └── ...
 │   └── reporting/            # Reporting Context
 │       └── ...
-├── pkg/                      # Shared, generic utilities (logging, http responses, custom errors)
+├── pkg/                      # Shared, generic utilities (logging, http responses, custom errors, upload, jwt)
 ├── migrations/               # Raw SQL files for database migrations
 └── Dockerfile                # Multi-stage build definitions
 ```
