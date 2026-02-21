@@ -9,6 +9,7 @@ type TeamRepository interface {
 	FindAll(ctx context.Context) ([]Team, error)
 	Update(ctx context.Context, team *Team) error
 	SoftDelete(ctx context.Context, id string) error
+	ExistsByName(ctx context.Context, name string, excludeID string) (bool, error)
 }
 
 // PlayerRepository defines the port for player persistence.

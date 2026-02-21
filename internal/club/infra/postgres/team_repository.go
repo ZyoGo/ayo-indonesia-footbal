@@ -109,3 +109,12 @@ func (r *teamRepository) SoftDelete(ctx context.Context, id string) error {
 	}
 	return nil
 }
+
+func (r *teamRepository) ExistsByName(ctx context.Context, name string, excludeID string) (bool, error) {
+	var exists bool
+	err := r.db.QueryRow(ctx, queryExistsTeamByName, name, excludeID).Scan(&exists)
+	if err != nil {
+		return false, derrors.WrapErrorf(err, derrors.ErrorCodeInternal, "failed to check if team exists by name")
+	}
+	return exists, nil
+}

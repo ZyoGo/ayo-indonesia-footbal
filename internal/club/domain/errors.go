@@ -4,7 +4,8 @@ import "errors"
 
 // Team domain errors.
 var (
-	ErrTeamNotFound = errors.New("team not found")
+	ErrTeamNotFound      = errors.New("team not found")
+	ErrTeamAlreadyExists = errors.New("team name already exists")
 )
 
 // Player domain errors.

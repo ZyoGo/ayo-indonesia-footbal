@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/ZyoGo/ayo-indonesia-footbal/internal/club/domain"
+	"github.com/ZyoGo/ayo-indonesia-footbal/pkg/derrors"
 )
 
 type TeamService struct {
@@ -18,6 +19,14 @@ func (s *TeamService) Create(ctx context.Context, team *domain.Team) (string, er
 	newTeam, err := domain.NewTeam(team.Name, team.LogoURL, team.YearFounded, team.Address, team.City)
 	if err != nil {
 		return "", err
+	}
+
+	exists, err := s.teamRepo.ExistsByName(ctx, newTeam.Name, "")
+	if err != nil {
+		return "", err
+	}
+	if exists {
+		return "", derrors.WrapErrorf(domain.ErrTeamAlreadyExists, derrors.ErrorCodeDuplicate, "team name %q is already taken", team.Name)
 	}
 
 	if err := s.teamRepo.Create(ctx, newTeam); err != nil {
@@ -51,6 +60,14 @@ func (s *TeamService) Update(ctx context.Context, id string, team *domain.Team) 
 
 	if err := existing.Update(team.Name, team.LogoURL, team.YearFounded, team.Address, team.City); err != nil {
 		return err
+	}
+
+	exists, err := s.teamRepo.ExistsByName(ctx, team.Name, id)
+	if err != nil {
+		return err
+	}
+	if exists {
+		return derrors.WrapErrorf(domain.ErrTeamAlreadyExists, derrors.ErrorCodeDuplicate, "team name %q is already taken", team.Name)
 	}
 
 	if err := s.teamRepo.Update(ctx, existing); err != nil {

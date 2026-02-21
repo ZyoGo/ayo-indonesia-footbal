@@ -47,6 +47,7 @@ func TestTeamService_Create_Success(t *testing.T) {
 		City:        "Bandung",
 	}
 
+	mockRepo.EXPECT().ExistsByName(ctx, "Persib Bandung", "").Return(false, nil)
 	mockRepo.EXPECT().Create(ctx, gomock.Any()).Return(nil)
 
 	// When
@@ -142,6 +143,7 @@ func TestTeamService_Create_RepoError(t *testing.T) {
 		City:        "Bandung",
 	}
 
+	mockRepo.EXPECT().ExistsByName(ctx, "Persib", "").Return(false, nil)
 	mockRepo.EXPECT().Create(ctx, gomock.Any()).Return(derrors.WrapErrorf(errors.New("db error"), derrors.ErrorCodeInternal, "failed to create team"))
 
 	// When
@@ -152,6 +154,36 @@ func TestTeamService_Create_RepoError(t *testing.T) {
 		t.Fatal("expected error, got nil")
 	}
 	assertErrorCode(t, err, derrors.ErrorCodeInternal)
+	if id != "" {
+		t.Fatalf("expected empty ID on error, got %q", id)
+	}
+}
+
+func TestTeamService_Create_NameAlreadyExists(t *testing.T) {
+	// Given
+	svc, mockRepo := setupTeamService(t)
+	ctx := context.Background()
+	input := &domain.Team{
+		Name:        "Persib",
+		LogoURL:     "https://example.com/logo.png",
+		YearFounded: 1933,
+		Address:     "Jl. Ahmad Yani",
+		City:        "Bandung",
+	}
+
+	mockRepo.EXPECT().ExistsByName(ctx, "Persib", "").Return(true, nil)
+
+	// When
+	id, err := svc.Create(ctx, input)
+
+	// Then
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	assertErrorCode(t, err, derrors.ErrorCodeDuplicate)
+	if !errors.Is(err, domain.ErrTeamAlreadyExists) {
+		t.Fatalf("expected ErrTeamAlreadyExists, got %v", err)
+	}
 	if id != "" {
 		t.Fatalf("expected empty ID on error, got %q", id)
 	}
@@ -296,6 +328,7 @@ func TestTeamService_Update_Success(t *testing.T) {
 	}
 
 	mockRepo.EXPECT().FindByID(ctx, "team-1").Return(existing, nil)
+	mockRepo.EXPECT().ExistsByName(ctx, "New Name", "team-1").Return(false, nil)
 	mockRepo.EXPECT().Update(ctx, gomock.Any()).Return(nil)
 
 	// When
@@ -360,6 +393,7 @@ func TestTeamService_Update_RepoError(t *testing.T) {
 	}
 
 	mockRepo.EXPECT().FindByID(ctx, "team-1").Return(existing, nil)
+	mockRepo.EXPECT().ExistsByName(ctx, "New Name", "team-1").Return(false, nil)
 	mockRepo.EXPECT().Update(ctx, gomock.Any()).Return(derrors.WrapErrorf(errors.New("db error"), derrors.ErrorCodeInternal, "failed to update team"))
 
 	// When
@@ -370,6 +404,35 @@ func TestTeamService_Update_RepoError(t *testing.T) {
 		t.Fatal("expected error, got nil")
 	}
 	assertErrorCode(t, err, derrors.ErrorCodeInternal)
+}
+
+func TestTeamService_Update_NameAlreadyExists(t *testing.T) {
+	// Given
+	svc, mockRepo := setupTeamService(t)
+	ctx := context.Background()
+	existing := &domain.Team{ID: "team-1", Name: "Old Name", YearFounded: 1933, City: "Bandung"}
+	update := &domain.Team{
+		Name:        "New Name",
+		LogoURL:     "https://example.com/logo.png",
+		YearFounded: 1933,
+		Address:     "Jl. Baru",
+		City:        "Bandung",
+	}
+
+	mockRepo.EXPECT().FindByID(ctx, "team-1").Return(existing, nil)
+	mockRepo.EXPECT().ExistsByName(ctx, "New Name", "team-1").Return(true, nil)
+
+	// When
+	err := svc.Update(ctx, "team-1", update)
+
+	// Then
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	assertErrorCode(t, err, derrors.ErrorCodeDuplicate)
+	if !errors.Is(err, domain.ErrTeamAlreadyExists) {
+		t.Fatalf("expected ErrTeamAlreadyExists, got %v", err)
+	}
 }
 
 // ---------------------------------------------------------------------------

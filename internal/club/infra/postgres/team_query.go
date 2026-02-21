@@ -26,4 +26,11 @@ const (
 	`
 
 	querySoftDeleteTeam = `UPDATE teams SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL`
+
+	queryExistsTeamByName = `
+		SELECT EXISTS (
+			SELECT 1 FROM teams
+			WHERE name = $1 AND id != $2 AND deleted_at IS NULL
+		)
+	`
 )
