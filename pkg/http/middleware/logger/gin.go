@@ -83,6 +83,13 @@ func GinLogger() gin.HandlerFunc {
 			"ip", c.ClientIP(),
 		}
 
+		if reqData != nil {
+			fields = append(fields, "request", reqData)
+		}
+		if resData != nil {
+			fields = append(fields, "response", resData)
+		}
+
 		switch {
 		case status >= 500:
 			log.Error("http_request", fields...)
@@ -90,10 +97,6 @@ func GinLogger() gin.HandlerFunc {
 			log.Warn("http_request", fields...)
 		default:
 			log.Info("http_request", fields...)
-		}
-
-		if reqData != nil || resData != nil {
-			log.Debug("http_body", "request", reqData, "response", resData)
 		}
 	}
 }
