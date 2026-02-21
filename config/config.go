@@ -13,8 +13,9 @@ import (
 
 var (
 	appConfig *AppConfig
-	lock      = &sync.Mutex{}
+	appLock   = &sync.Mutex{}
 	jwtKeys   *JWTKeys
+	jwtLock   = &sync.Mutex{}
 )
 
 type AppConfig struct {
@@ -22,6 +23,12 @@ type AppConfig struct {
 		Port           uint16   `toml:"port"`
 		AllowedOrigins []string `toml:"allowedOrigins"`
 	} `toml:"app"`
+	Upload struct {
+		BasePath     string   `toml:"base_path"`
+		URLPrefix    string   `toml:"url_prefix"`
+		MaxSize      int64    `toml:"max_size"`
+		AllowedTypes []string `toml:"allowed_types"`
+	} `toml:"upload"`
 	Database struct {
 		Name     string `toml:"name"`
 		Username string `toml:"username"`
@@ -44,8 +51,8 @@ type JWTKeys struct {
 }
 
 func GetConfig() *AppConfig {
-	lock.Lock()
-	defer lock.Unlock()
+	appLock.Lock()
+	defer appLock.Unlock()
 
 	if appConfig == nil {
 		var err error
@@ -60,8 +67,8 @@ func GetConfig() *AppConfig {
 }
 
 func GetJWTKeys() *JWTKeys {
-	lock.Lock()
-	defer lock.Unlock()
+	jwtLock.Lock()
+	defer jwtLock.Unlock()
 
 	if jwtKeys == nil {
 		var err error
@@ -88,10 +95,26 @@ func loadConfig() (*AppConfig, error) {
 	}
 
 	var config AppConfig
-	err := viper.Unmarshal(&config)
-	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
-	}
+
+	config.App.Port = uint16(viper.GetInt("app.port"))
+	config.App.AllowedOrigins = viper.GetStringSlice("app.allowedorigins")
+
+	config.Database.Name = viper.GetString("database.name")
+	config.Database.Username = viper.GetString("database.username")
+	config.Database.Password = viper.GetString("database.password")
+	config.Database.Port = uint16(viper.GetInt("database.port"))
+	config.Database.Address = viper.GetString("database.address")
+	config.Database.Driver = viper.GetString("database.driver")
+
+	config.JWT.PrivateKeyPath = viper.GetString("jwt.private_key_path")
+	config.JWT.PublicKeyPath = viper.GetString("jwt.public_key_path")
+	config.JWT.Issuer = viper.GetString("jwt.issuer")
+	config.JWT.Subject = viper.GetString("jwt.subject")
+
+	config.Upload.BasePath = viper.GetString("upload.base_path")
+	config.Upload.URLPrefix = viper.GetString("upload.url_prefix")
+	config.Upload.MaxSize = viper.GetInt64("upload.max_size")
+	config.Upload.AllowedTypes = viper.GetStringSlice("upload.allowed_types")
 
 	logger.Get().Info("Configuration successfully loaded")
 
