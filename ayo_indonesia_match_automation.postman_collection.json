@@ -1,0 +1,251 @@
+{
+	"info": {
+		"_postman_id": "7dc1a9b2-3e42-4f15-8a8b-1b2b3c4d5e6f",
+		"name": "Ayo Indonesia Match API Automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Create Home Team",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							"var res = pm.response.json();",
+							"pm.test(\"Has Team ID\", function () {",
+							"    pm.expect(res.data).to.have.property('id');",
+							"    pm.collectionVariables.set(\"home_team_id\", res.data.id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Persija Jakarta\",\n    \"logo_url\": \"https://example.com/persija.png\",\n    \"established_year\": 1928\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/teams",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"teams"
+					]
+				}
+			}
+		},
+		{
+			"name": "2. Create Away Team",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							"var res = pm.response.json();",
+							"pm.test(\"Has Team ID\", function () {",
+							"    pm.expect(res.data).to.have.property('id');",
+							"    pm.collectionVariables.set(\"away_team_id\", res.data.id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Persib Bandung\",\n    \"logo_url\": \"https://example.com/persib.png\",\n    \"established_year\": 1933\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/teams",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"teams"
+					]
+				}
+			}
+		},
+		{
+			"name": "3. Create Match",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 or 201\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							"var res = pm.response.json();",
+							"pm.test(\"Has Match ID\", function () {",
+							"    pm.expect(res.data).to.have.property('id');",
+							"    pm.collectionVariables.set(\"match_id\", res.data.id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"home_team_id\": \"{{home_team_id}}\",\n    \"away_team_id\": \"{{away_team_id}}\",\n    \"match_date\": \"2026-10-15\",\n    \"match_time\": \"19:00\",\n    \"stadium\": \"Gelora Bung Karno\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/matches",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"matches"
+					]
+				}
+			}
+		},
+		{
+			"name": "4. Get All Matches",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var res = pm.response.json();",
+							"pm.test(\"Response is array and contains our match\", function () {",
+							"    pm.expect(res.data).to.be.an('array');",
+							"    var match = res.data.find(m => m.id === pm.collectionVariables.get(\"match_id\"));",
+							"    pm.expect(match).to.not.be.undefined;",
+							"    ",
+							"    // Verify schema fields",
+							"    pm.expect(match).to.have.property('home_team_name', 'Persija Jakarta');",
+							"    pm.expect(match).to.have.property('away_team_name', 'Persib Bandung');",
+							"    pm.expect(match).to.not.have.property('stadium');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/matches",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"matches"
+					]
+				}
+			}
+		},
+		{
+			"name": "5. Get Match details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var res = pm.response.json();",
+							"pm.test(\"Response matches our detail schema\", function () {",
+							"    pm.expect(res.data.id).to.eql(pm.collectionVariables.get(\"match_id\"));",
+							"    pm.expect(res.data.home_team_name).to.eql('Persija Jakarta');",
+							"    pm.expect(res.data.away_team_name).to.eql('Persib Bandung');",
+							"    pm.expect(res.data.stadium).to.eql('Gelora Bung Karno');",
+							"    pm.expect(res.data).to.have.property('created_at');",
+							"    pm.expect(res.data).to.have.property('updated_at');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/matches/{{match_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"matches",
+						"{{match_id}}"
+					]
+				}
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "home_team_id",
+			"value": ""
+		},
+		{
+			"key": "away_team_id",
+			"value": ""
+		},
+		{
+			"key": "match_id",
+			"value": ""
+		}
+	]
+}
